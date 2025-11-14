@@ -68,8 +68,8 @@ jobs:
       - name: Build package
         run: uv build
 
-      - name: Install package from wheel
-        run: uv pip install dist/*.whl --system
+      - name: Install package with uv tool
+        run: uv tool install dist/*.whl
 
       - name: Test CLI
         run: |
