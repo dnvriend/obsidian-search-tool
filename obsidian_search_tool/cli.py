@@ -6,7 +6,7 @@ and has been reviewed and tested by a human.
 
 import click
 
-from obsidian_search_tool.commands import auth, search, status
+from obsidian_search_tool.commands import auth, completion, search, status
 
 
 @click.group()
@@ -92,6 +92,7 @@ def main() -> None:
 main.add_command(status)
 main.add_command(auth)
 main.add_command(search)
+main.add_command(completion)
 
 
 if __name__ == "__main__":

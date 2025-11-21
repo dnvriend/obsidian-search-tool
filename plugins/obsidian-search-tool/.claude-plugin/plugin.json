@@ -1,0 +1,8 @@
+{
+    "name": "obsidian-search-tool",
+    "description": "obsidian-search-tool-plugin",
+    "version": "0.1.0",
+    "author": {
+        "name": "Dennis Vriend"
+    }
+}

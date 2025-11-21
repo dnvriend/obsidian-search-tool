@@ -17,17 +17,34 @@ from obsidian_search_tool.core.models import AuthResponse, SearchResponse, Statu
 console = Console()
 
 
-def setup_logging(verbose: bool = False) -> None:
+def setup_logging(verbose: bool | int = False) -> None:
     """Configure logging for the application.
 
+    DEPRECATED: Use obsidian_search_tool.logging_config.setup_logging() instead.
+    This function is kept for backward compatibility.
+
     Args:
-        verbose: Enable verbose (DEBUG) logging if True, otherwise WARNING
+        verbose: Enable verbose logging (bool for legacy, int for multi-level)
     """
-    level = logging.DEBUG if verbose else logging.WARNING
+    # For backward compatibility, convert bool to int
+    if isinstance(verbose, bool):
+        verbose_count = 1 if verbose else 0
+    else:
+        verbose_count = verbose
+
+    # Map to logging levels
+    if verbose_count == 0:
+        level = logging.WARNING
+    elif verbose_count == 1:
+        level = logging.INFO
+    else:
+        level = logging.DEBUG
+
     logging.basicConfig(
         level=level,
         format="[%(levelname)s] %(message)s",
         stream=sys.stderr,
+        force=True,
     )
 
 

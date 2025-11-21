@@ -1,0 +1,15 @@
+{
+    "name": "obsidian-search-tool",
+    "owner": {
+        "name": "Dennis Vriend",
+        "email": "dvriend@ilionx.com",
+        "url": "https://github.com/dnvriend/obsidian-search-tool"
+    },
+    "plugins": [
+        {
+            "name": "obsidian-search-tool",
+            "source": "./plugins/obsidian-search-tool",
+            "description": "Search Obsidian vault via Dataview and JsonLogic"
+        }
+    ]
+}

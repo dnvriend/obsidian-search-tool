@@ -15,13 +15,15 @@ from obsidian_search_tool.core.client import (
     ObsidianClientError,
     ObsidianConnectionError,
 )
+from obsidian_search_tool.logging_config import get_logger, setup_logging
 from obsidian_search_tool.utils import (
     format_error_json,
     format_search_json,
     format_search_table,
     format_search_text,
-    setup_logging,
 )
+
+logger = get_logger(__name__)
 
 
 @click.command()
@@ -61,11 +63,10 @@ from obsidian_search_tool.utils import (
     help="Output as pretty-printed table",
 )
 @click.option(
+    "-v",
     "--verbose",
-    "-V",
-    "verbose",
-    is_flag=True,
-    help="Enable verbose logging",
+    count=True,
+    help="Enable verbose output (use -v for INFO, -vv for DEBUG, -vvv for TRACE)",
 )
 def search(
     query_text: str | None,
@@ -74,7 +75,7 @@ def search(
     output_json: bool,
     output_text: bool,
     output_table: bool,
-    verbose: bool,
+    verbose: int,
 ) -> None:
     """Search Obsidian vault using Dataview DQL or JsonLogic queries.
 
@@ -168,6 +169,8 @@ def search(
     """
     # Setup logging
     setup_logging(verbose)
+    logger.info("Search command started")
+    logger.debug(f"Query type: {query_type}, use_stdin: {use_stdin}")
 
     # Validate query input
     if query_text and use_stdin:
@@ -194,7 +197,9 @@ def search(
     # Read query from stdin if needed
     query = query_text
     if use_stdin:
+        logger.debug("Reading query from stdin")
         query = sys.stdin.read().strip()
+        logger.debug(f"Received query from stdin: {query[:100]}...")
         if not query:
             click.echo(
                 format_error_json(
@@ -213,39 +218,62 @@ def search(
 
     try:
         # Create client and perform search
+        logger.debug("Initializing Obsidian client")
         client = ObsidianClient()
 
         if query_type.lower() == "dataview":
+            logger.info(f"Executing Dataview query: {query[:100]}...")
+            logger.debug(f"Full query: {query}")
             response = client.search_dataview(query)
         else:  # jsonlogic
+            logger.info(f"Executing JsonLogic query: {query[:100]}...")
+            logger.debug(f"Full query: {query}")
             response = client.search_jsonlogic(query)
+
+        logger.info(f"Search completed: {response.result_count} results found")
 
         # Format and output response
         if output_table:
+            logger.debug("Formatting output as table")
             output = format_search_table(response)
         elif output_text:
+            logger.debug("Formatting output as text")
             output = format_search_text(response)
         else:  # JSON
+            logger.debug("Formatting output as JSON")
             output = format_search_json(response)
 
         click.echo(output)
 
         # Exit with error code if search failed
         if not response.success:
+            logger.error("Search operation failed")
             sys.exit(1)
 
+        logger.info("Search command completed successfully")
+
     except ObsidianAuthError as e:
+        logger.error(f"Authentication error: {str(e)}")
+        logger.debug("Full traceback:", exc_info=True)
         click.echo(format_error_json(str(e), "AUTH_ERROR", 401))
         sys.exit(1)
     except ObsidianConnectionError as e:
+        logger.error(f"Connection error: {str(e)}")
+        logger.debug("Full traceback:", exc_info=True)
         click.echo(format_error_json(str(e), "CONNECTION_ERROR", 503))
         sys.exit(1)
     except ObsidianAPIError as e:
+        logger.error(f"API error [{e.status_code}]: {e.error_code} - {str(e)}")
+        logger.debug("Full traceback:", exc_info=True)
         click.echo(format_error_json(str(e), e.error_code, e.status_code))
         sys.exit(1)
     except ObsidianClientError as e:
+        logger.error(f"Client error: {str(e)}")
+        logger.debug("Full traceback:", exc_info=True)
         click.echo(format_error_json(str(e), "CLIENT_ERROR", 500))
         sys.exit(1)
     except Exception as e:
+        logger.error(f"Unexpected error: {type(e).__name__}: {str(e)}")
+        logger.debug("Full traceback:", exc_info=True)
         click.echo(format_error_json(f"Unexpected error: {e}", "UNKNOWN_ERROR", 500))
         sys.exit(1)

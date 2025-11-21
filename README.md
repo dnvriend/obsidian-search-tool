@@ -1,3 +1,7 @@
+<div align="center">
+  <img src=".github/assets/logo.png" alt="Obsidian Search Tool Logo" width="200"/>
+</div>
+
 # Obsidian Search Tool
 
 [![CI](https://github.com/dnvriend/obsidian-search-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/dnvriend/obsidian-search-tool/actions/workflows/ci.yml)
