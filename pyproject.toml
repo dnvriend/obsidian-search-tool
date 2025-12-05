@@ -13,6 +13,38 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
+keywords = [
+    "obsidian",
+    "dataview",
+    "dql",
+    "search",
+    "cli",
+    "knowledge-management",
+    "note-taking",
+    "vault",
+    "jsonlogic",
+    "rest-api"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business",
+    "Topic :: Utilities",
+    "Topic :: Text Processing",
+    "Environment :: Console",
+    "Typing :: Typed"
+]
+
+[project.urls]
+Homepage = "https://github.com/dnvriend/obsidian-search-tool"
+Repository = "https://github.com/dnvriend/obsidian-search-tool"
+Issues = "https://github.com/dnvriend/obsidian-search-tool/issues"
+Changelog = "https://github.com/dnvriend/obsidian-search-tool/releases"
 
 [project.scripts]
 obsidian-search-tool = "obsidian_search_tool.cli:main"

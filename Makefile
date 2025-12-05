@@ -44,10 +44,10 @@ run: ## Run obsidian-search-tool (usage: make run ARGS="...")
 	uv run obsidian-search-tool $(ARGS)
 
 build: ## Build package
-	uv build
+	uv build --force-pep517
 
-install-global: ## Install globally with uv tool
-	uv tool install . --reinstall
+install-global: build uninstall-global ## Install globally with uv tool (rebuilds and uninstalls first)
+	uv tool install .
 
 uninstall-global: ## Uninstall global installation
 	uv tool uninstall obsidian-search-tool
